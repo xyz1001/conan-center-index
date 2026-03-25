@@ -48,7 +48,9 @@ class WaylandConan(ConanFile):
 
     def requirements(self):
         if self.options.enable_libraries:
-            self.requires("libffi/[>=3.4.4 <4]")
+            # libffi is required by wayland-client/server static libraries
+            # transitive_libs is needed for static linking to work correctly
+            self.requires("libffi/[>=3.4.4 <4]", transitive_libs=not self.options.shared)
         if self.options.enable_dtd_validation:
             self.requires("libxml2/[>=2.12.5 <3]")
         self.requires("expat/[>=2.6.2 <3]")

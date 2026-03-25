@@ -147,8 +147,10 @@ class LibffiConan(ConanFile):
         rmdir(self, os.path.join(self.package_folder, "share"))
 
     def package_info(self):
-        self.cpp_info.libs = ["{}ffi".format("lib" if is_msvc(self) else "")]
         self.cpp_info.set_property("pkg_config_name", "libffi")
+        # Define libffi component so that consumers can use libffi::libffi
+        self.cpp_info.components["libffi"].libs = ["{}ffi".format("lib" if is_msvc(self) else "")]
+        self.cpp_info.components["libffi"].set_property("pkg_config_name", "libffi")
         if not self.options.shared:
             static_define = "FFI_STATIC_BUILD" if Version(self.version) >= "3.4.6" else "FFI_BUILDING"
-            self.cpp_info.defines = [static_define]
+            self.cpp_info.components["libffi"].defines = [static_define]
